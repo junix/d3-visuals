@@ -1,0 +1,14 @@
+[
+  {"id":"chord","use":"flow","family":"flow","question":"How do six urban commons exchange capacity?","complexity":"advanced","tags":["chord","ribbon","flow"]},
+  {"id":"radial-tree","use":"hierarchy","family":"hierarchy","question":"How does a mycelium taxonomy branch across scales?","complexity":"advanced","tags":["tree","radial","hierarchy"]},
+  {"id":"voronoi","use":"spatial","family":"spatial","question":"How do synthetic sensors partition climate territory?","complexity":"advanced","tags":["voronoi","delaunay","spatial"]},
+  {"id":"force-network","use":"network","family":"network","question":"Which collaborators bridge an interdisciplinary institute?","complexity":"advanced","tags":["force","network","community"]},
+  {"id":"treemap","use":"hierarchy","family":"hierarchy","question":"How is habitat loss nested across biomes and causes?","complexity":"advanced","tags":["treemap","hierarchy","ecology"]},
+  {"id":"sunburst","use":"hierarchy","family":"hierarchy","question":"How does a software system decompose from product to module?","complexity":"advanced","tags":["sunburst","architecture","partition"]},
+  {"id":"streamgraph","use":"temporal composition","family":"temporal composition","question":"How do listening modes evolve over a fictional day?","complexity":"advanced","tags":["streamgraph","stack","time"]},
+  {"id":"matrix","use":"network","family":"network","question":"Which teams collaborate repeatedly and asymmetrically?","complexity":"advanced","tags":["adjacency-matrix","network","collaboration"]},
+  {"id":"beeswarm","use":"distribution","family":"distribution","question":"How do performance distributions differ without hiding observations?","complexity":"advanced","tags":["beeswarm","distribution","benchmark"]},
+  {"id":"slopegraph","use":"change","family":"change","question":"Which regions reversed rank between two periods?","complexity":"advanced","tags":["slopegraph","ranking","change"]},
+  {"id":"contours","use":"scalar field","family":"scalar field","question":"Where do two simulated pressure systems overlap?","complexity":"advanced","tags":["contour","density","field"]},
+  {"id":"spiral","use":"cyclical time","family":"cyclical time","question":"How does seasonality accumulate across multiple years?","complexity":"advanced","tags":["spiral","time","seasonality"]}
+]
