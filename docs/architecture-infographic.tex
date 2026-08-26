@@ -1,0 +1,421 @@
+\documentclass[border=14pt,varwidth=17.6cm]{standalone}
+\usepackage[UTF8,fontset=none]{ctex}
+\IfFontExistsTF{Source Han Serif SC}{
+  \setmainfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  \setsansfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  \setCJKmainfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  \setCJKsansfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+}{
+  \PackageWarningNoLine{tikz-infographic}{Source Han Serif SC not found; using Fandol}
+  \setCJKmainfont[BoldFont={FandolSong-Bold}]{FandolSong-Regular}
+  \setCJKsansfont[BoldFont={FandolHei-Bold}]{FandolHei-Regular}
+}
+\IfFontExistsTF{Sarasa Mono SC}{
+  \setmonofont{Sarasa Mono SC}
+  \setCJKmonofont{Sarasa Mono SC}
+}{
+  \PackageWarningNoLine{tikz-infographic}{Sarasa Mono SC not found; using TeX defaults}
+  \setmonofont{Latin Modern Mono}
+  \setCJKmonofont{FandolFang-Regular}
+}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{listings}
+\usetikzlibrary{arrows.meta,backgrounds,calc,fit,positioning,shapes.geometric,decorations.pathreplacing}
+\pgfdeclarelayer{edge layer}
+\pgfsetlayers{background,edge layer,main}
+
+% ============================================================
+% 调色板（沿用项目主色：青、金、粉、蓝、紫、天蓝）
+% ============================================================
+\definecolor{Paper}{HTML}{F2F7FA}
+\definecolor{Ink}{HTML}{0C1A2C}
+\definecolor{Slate}{HTML}{496B82}
+\definecolor{Fog}{HTML}{C9DAE6}
+\definecolor{Teal}{HTML}{54D6C6}
+\definecolor{TealDark}{HTML}{2A9D8F}
+\definecolor{Gold}{HTML}{FFD166}
+\definecolor{GoldDark}{HTML}{E0A93E}
+\definecolor{Rose}{HTML}{FF6F91}
+\definecolor{RoseDark}{HTML}{D94F72}
+\definecolor{Indigo}{HTML}{7B9CFF}
+\definecolor{IndigoDark}{HTML}{5472E0}
+\definecolor{Violet}{HTML}{B889FF}
+\definecolor{VioletDark}{HTML}{8A5FDB}
+\definecolor{Sky}{HTML}{65B9FF}
+\definecolor{SkyDark}{HTML}{3D8FD9}
+\definecolor{Panel}{HTML}{FFFFFF}
+
+% ============================================================
+% TikZ 样式
+% ============================================================
+\tikzset{
+  every node/.style={font=\rmfamily},
+  kicker/.style={anchor=west,font=\rmfamily\scriptsize\bfseries,text=TealDark},
+  h1/.style={anchor=west,font=\rmfamily\Huge\bfseries,text=Ink},
+  h2/.style={anchor=west,font=\rmfamily\Large\bfseries,text=Ink},
+  h3/.style={anchor=west,font=\rmfamily\footnotesize\bfseries,text=Ink},
+  lead/.style={anchor=west,font=\rmfamily\small,text=Slate,align=left,text width=150mm},
+  note/.style={anchor=west,font=\rmfamily\scriptsize,text=Slate,align=left,text width=140mm},
+  micro/.style={anchor=west,font=\rmfamily\scriptsize\ttfamily,text=Slate},
+  panel/.style={
+    draw=Fog,fill=Panel,rounded corners=3.5mm,line width=.8pt,
+    inner sep=4.5mm,outer sep=0pt
+  },
+  viz-chip/.style={
+    rounded corners=1.5mm,line width=.8pt,minimum height=6.8mm,
+    minimum width=16mm,align=center,font=\rmfamily\footnotesize\bfseries,
+    inner xsep=2mm,inner ysep=1.2mm
+  },
+  family-band/.style={
+    rounded corners=2.5mm,line width=.8pt,minimum height=10mm,
+    align=center,font=\rmfamily\footnotesize\bfseries,
+    inner xsep=3mm,inner ysep=2mm
+  },
+  primary arrow/.style={
+    -{Latex[length=2.6mm,width=1.8mm]},draw=TealDark,
+    line width=1.1pt,rounded corners=2mm
+  },
+  support arrow/.style={
+    -{Latex[length=2mm,width=1.4mm]},draw=Slate!60,
+    line width=.75pt,rounded corners=1.5mm
+  },
+  data arrow/.style={
+    -{Stealth[length=2.2mm,width=1.5mm]},draw=IndigoDark,
+    line width=.9pt,rounded corners=1.5mm
+  },
+  edge tag/.style={
+    fill=Paper,inner sep=1.5pt,font=\rmfamily\scriptsize,text=Slate
+  },
+  stage-tag/.style={
+    circle,minimum size=6.5mm,fill=TealDark,text=white,
+    font=\rmfamily\footnotesize\bfseries,inner sep=0pt
+  }
+}
+
+\lstdefinestyle{paper-code}{
+  basicstyle=\ttfamily\scriptsize\color{Ink},
+  keywordstyle=\bfseries\color{IndigoDark},
+  commentstyle=\itshape\color{TealDark},
+  stringstyle=\color{RoseDark},
+  numberstyle=\scriptsize\color{Slate},
+  numbers=left,
+  numbersep=7pt,
+  frame=single,
+  rulecolor=\color{Fog},
+  backgroundcolor=\color{Paper!65},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=2,
+  xleftmargin=8pt,
+  framexleftmargin=6pt,
+  aboveskip=5pt,
+  belowskip=0pt
+}
+
+\newcommand{\SectionRule}{
+  \par\vspace{2.5mm}
+  \noindent\rule{\linewidth}{.4pt}\textcolor{Fog}{}
+  \par\vspace{2.5mm}
+}
+
+\newcommand{\LongConnector}[1]{%
+  \par\vspace{1.2mm}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw[primary arrow] (0,.42) -- (0,-.42);
+      \node[anchor=west,font=\rmfamily\scriptsize\bfseries,text=Slate]
+        at (.32,0) {#1};
+    \end{tikzpicture}
+  \end{center}
+  \vspace{1.2mm}
+}
+
+\begin{document}
+\setlength{\parindent}{0pt}
+\pagecolor{Paper}
+
+% ============================================================
+%  封面区
+% ============================================================
+\begin{tikzpicture}[remember picture,overlay]
+  % 顶部装饰色带（六种视觉家族色）
+  \fill[Teal]   (0,2)   rectangle (1.1, 2.5);
+  \fill[Gold]   (1.1,2) rectangle (2.2, 2.5);
+  \fill[Rose]   (2.2,2) rectangle (3.3, 2.5);
+  \fill[Indigo] (3.3,2) rectangle (4.4, 2.5);
+  \fill[Violet] (4.4,2) rectangle (5.5, 2.5);
+  \fill[Sky]    (5.5,2) rectangle (6.6, 2.5);
+\end{tikzpicture}
+
+\vspace{4mm}
+
+{\scriptsize\bfseries\color{TealDark}D3-VISUALS \quad\textperiodcentered\quad 架构信息图}\par
+\vspace{2mm}
+{\Huge\bfseries\color{Ink}十二个参考场景，一种几何语言}\par
+\vspace{1.5mm}
+{\small\color{Slate}
+D3 在这里不是预设图表库，而是几何与布局工具箱。项目用 TypeScript + Vite 构建，
+通过 Playwright 离线截图与像素验收，输出十二个可独立复用的视觉模板。
+}\par
+
+\vspace{5mm}
+
+% ============================================================
+%  面板 1：项目定位
+% ============================================================
+\begin{tikzpicture}[x=1mm,y=1mm]
+  % 背景面板
+  \node[panel,minimum width=172mm,minimum height=28mm,anchor=north west]
+    (p1) at (0,0) {};
+
+  % 标题
+  \node[kicker] at (5, -5) {01 \quad 项目定位};
+  \node[h3] at (5, -10.5) {以场景驱动的 D3 几何工作台};
+
+  % 四个指标徽章
+  \node[viz-chip,fill=Teal!18,draw=TealDark,text=TealDark] (m1) at (30, -20) {12 个场景};
+  \node[viz-chip,fill=Gold!22,draw=GoldDark,text=GoldDark!90!black] (m2) at (61, -20) {6 个视觉家族};
+  \node[viz-chip,fill=Indigo!18,draw=IndigoDark,text=IndigoDark] (m3) at (94, -20) {100\% 离线测试};
+  \node[viz-chip,fill=Rose!18,draw=RoseDark,text=RoseDark] (m4) at (129, -20) {透明 PNG 导出};
+
+  % 右侧标签
+  \node[micro,anchor=east,text width=32mm,align=right] at (167, -20)
+    {d3 v7.9.0 \\ vite 8 \\ playwright 1.62};
+\end{tikzpicture}
+
+\LongConnector{从设计意图出发，进入六种视觉家族的组织结构}
+
+% ============================================================
+%  面板 2：视觉家族与 12 场景
+% ============================================================
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \node[panel,minimum width=172mm,minimum height=100mm,anchor=north west]
+    (p2) at (0,0) {};
+
+  \node[kicker] at (5, -5) {02 \quad 视觉家族地图};
+  \node[h3] at (5, -10.5) {六大家族，十二个场景，每个都回答一个独特问题};
+
+  % ---- 家族 1：层级 (hierarchy) ----
+  \node[family-band,fill=Teal!16,draw=TealDark,text=TealDark,minimum width=52mm,anchor=north west]
+    (fam1) at (7, -17) {层级结构 \enskip hierarchy};
+
+  \node[viz-chip,below=4mm of fam1.south west,anchor=north west,
+    fill=white,draw=TealDark!70,text=Ink,minimum width=22mm] (h1) {Radial Tree};
+  \node[viz-chip,right=2mm of h1,
+    fill=white,draw=TealDark!70,text=Ink,minimum width=16mm] (h2) {Treemap};
+  \node[viz-chip,right=2mm of h2,
+    fill=white,draw=TealDark!70,text=Ink,minimum width=16mm] (h3) {Sunburst};
+
+  \node[note,below=2mm of h1.south west,anchor=north west,text width=50mm,font=\scriptsize]
+    {菌丝分类、栖息地嵌套、软件系统分解：从根到叶的三种表达。};
+
+  % ---- 家族 2：网络 (network) ----
+  \node[family-band,fill=Violet!20,draw=VioletDark,text=VioletDark!90!black,minimum width=52mm,anchor=north west]
+    (fam2) at (65, -17) {网络关系 \enskip network};
+
+  \node[viz-chip,below=4mm of fam2.south west,anchor=north west,
+    fill=white,draw=VioletDark!70,text=Ink,minimum width=22mm] (n1) {Force Network};
+  \node[viz-chip,right=2mm of n1,
+    fill=white,draw=VioletDark!70,text=Ink,minimum width=24mm] (n2) {Adjacency Matrix};
+
+  \node[note,below=2mm of n1.south west,anchor=north west,text width=50mm,font=\scriptsize]
+    {跨学科协作的社区与桥梁；十二支团队的非对称合作矩阵。};
+
+  % ---- 家族 3：空间/场 (spatial + scalar field) ----
+  \node[family-band,fill=Sky!22,draw=SkyDark,text=SkyDark,minimum width=52mm,anchor=north west]
+    (fam3) at (123, -17) {空间与场 \enskip spatial};
+
+  \node[viz-chip,below=4mm of fam3.south west,anchor=north west,
+    fill=white,draw=SkyDark!70,text=Ink,minimum width=18mm] (s1) {Voronoi};
+  \node[viz-chip,right=2mm of s1,
+    fill=white,draw=SkyDark!70,text=Ink,minimum width=18mm] (s2) {Contours};
+
+  \node[note,below=2mm of s1.south west,anchor=north west,text width=50mm,font=\scriptsize]
+    {84 个合成传感器的领土划分；两套压力场的干涉等值线。};
+
+  % ---- 家族 4：流动 (flow) ----
+  \node[family-band,fill=Rose!18,draw=RoseDark,text=RoseDark,minimum width=52mm,anchor=north west]
+    (fam4) at (7, -52) {流动交换 \enskip flow};
+
+  \node[viz-chip,below=4mm of fam4.south west,anchor=north west,
+    fill=white,draw=RoseDark!70,text=Ink,minimum width=16mm] (f1) {Chord};
+  \node[viz-chip,right=2mm of f1,
+    fill=white,draw=RoseDark!70,text=Ink,minimum width=22mm] (f2) {Streamgraph};
+
+  \node[note,below=2mm of f1.south west,anchor=north west,text width=50mm,font=\scriptsize]
+    {六大城市公共资源的能力流动；虚构一日内六类收听模式的演变。};
+
+  % ---- 家族 5：分布与变化 (distribution + change) ----
+  \node[family-band,fill=Gold!25,draw=GoldDark,text=GoldDark!90!black,minimum width=52mm,anchor=north west]
+    (fam5) at (65, -52) {分布与变化 \enskip change};
+
+  \node[viz-chip,below=4mm of fam5.south west,anchor=north west,
+    fill=white,draw=GoldDark!70,text=Ink,minimum width=18mm] (c1) {Beeswarm};
+  \node[viz-chip,right=2mm of c1,
+    fill=white,draw=GoldDark!70,text=Ink,minimum width=20mm] (c2) {Slopegraph};
+
+  \node[note,below=2mm of c1.south west,anchor=north west,text width=50mm,font=\scriptsize]
+    {360 次运行的性能分布，每个观测都可见；两区排名十年反转。};
+
+  % ---- 家族 6：循环时间 (cyclical time) ----
+  \node[family-band,fill=Indigo!18,draw=IndigoDark,text=IndigoDark,minimum width=52mm,anchor=north west]
+    (fam6) at (123, -52) {循环时间 \enskip cyclical};
+
+  \node[viz-chip,below=4mm of fam6.south west,anchor=north west,
+    fill=white,draw=IndigoDark!70,text=Ink,minimum width=16mm] (t1) {Spiral};
+
+  \node[note,below=2mm of t1.south west,anchor=north west,text width=50mm,font=\scriptsize]
+    {七年季节性需求的螺旋累积：时间既线性展开，又周而复始。};
+
+  % 底部说明
+  \node[note,anchor=south west,text width=162mm] at (5, -94)
+    {每个场景都由独立的渲染函数生成，通过 URL 参数 \texttt{?scene=id} 切换。
+    \texttt{catalog.json} 记录用途、问题、家族、复杂度与标签，是场景清单的权威来源。};
+\end{tikzpicture}
+
+\LongConnector{六个家族共享同一套底层构建管线与数据契约}
+
+% ============================================================
+%  面板 3：构建与渲染管线
+% ============================================================
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \node[panel,minimum width=172mm,minimum height=70mm,anchor=north west]
+    (p3) at (0,0) {};
+
+  \node[kicker] at (5, -5) {03 \quad 构建与渲染管线};
+  \node[h3] at (5, -10.5) {从源码到像素验收的四步闭环};
+
+  % 四个阶段节点
+  \node[stage-tag] (s1) at (18, -24) {1};
+  \node[h3,anchor=west] at (27, -22.5) {源码与场景};
+  \node[note,anchor=north west,text width=35mm] at (27, -25.5)
+    {TypeScript 单一入口 \texttt{src/main.ts}，12 个渲染函数由查询参数分发。};
+
+  \node[stage-tag,fill=GoldDark] (s2) at (58, -24) {2};
+  \node[h3,anchor=west] at (67, -22.5) {Vite 构建};
+  \node[note,anchor=north west,text width=35mm] at (67, -25.5)
+    {\texttt{vite build} 打包至 \texttt{dist/}，纯静态资源，无运行时依赖。};
+
+  \node[stage-tag,fill=RoseDark] (s3) at (98, -24) {3};
+  \node[h3,anchor=west] at (107, -22.5) {Playwright 截图};
+  \node[note,anchor=north west,text width=35mm] at (107, -25.5)
+    {\texttt{scripts/capture.mjs} 逐场景加载，等 \texttt{\_\_VIS\_READY\_\_} 后导出透明 PNG。};
+
+  \node[stage-tag,fill=VioletDark] (s4) at (138, -24) {4};
+  \node[h3,anchor=west] at (147, -22.5) {像素验收};
+  \node[note,anchor=north west,text width=25mm] at (147, -25.5)
+    {\texttt{npm test} 类型检查 + 渲染 + 像素对比，全绿即通过。};
+
+  % 箭头连接
+  \draw[primary arrow] (s1.east) -- (s2.west);
+  \draw[primary arrow] (s2.east) -- (s3.west);
+  \draw[primary arrow] (s3.east) -- (s4.east|-s3.east);
+
+  % 下方：输入输出层
+  \node[h3,anchor=west] at (10, -42) {产出物};
+
+  \node[viz-chip,fill=Teal!14,draw=TealDark!60,text=Ink,minimum width=40mm,anchor=north west]
+    (o1) at (10, -47) {dist/ 静态站点};
+  \node[viz-chip,fill=Gold!18,draw=GoldDark!60,text=Ink,minimum width=40mm,anchor=north west]
+    (o2) at (52, -47) {out/*.png 场景图};
+  \node[viz-chip,fill=Indigo!14,draw=IndigoDark!60,text=Ink,minimum width=40mm,anchor=north west]
+    (o3) at (94, -47) {catalog.json 元数据};
+  \node[viz-chip,fill=Rose!14,draw=RoseDark!60,text=Ink,minimum width=30mm,anchor=north west]
+    (o4) at (136, -47) {README 图集};
+
+  % 底部：代码片段
+  \node[h3,anchor=west] at (10, -60) {场景切换契约};
+\end{tikzpicture}
+
+\vspace{-1mm}
+\begin{lstlisting}[style=paper-code,language=HTML]
+// 渲染函数注册表：每个场景 = 一个独立函数 + 一个字符串 id
+const renderers: Record<string, () => void> = {
+  chord: chordScene, 'radial-tree': treeScene,
+  voronoi: voronoiScene, 'force-network': forceNetwork,
+  treemap: treemapScene, sunburst: sunburstScene,
+  streamgraph, matrix: matrixScene,
+  beeswarm, slopegraph, contours: contourScene, spiral: spiralScene
+};
+(renderers[scene] ?? chordScene)();
+window.__VIS_READY__ = true;   // 通知截图脚本场景就绪
+\end{lstlisting}
+
+\LongConnector{统一的视觉语言让十二个场景看起来像同一个系统}
+
+% ============================================================
+%  面板 4：设计系统
+% ============================================================
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \node[panel,minimum width=172mm,minimum height=50mm,anchor=north west]
+    (p4) at (0,0) {};
+
+  \node[kicker] at (5, -5) {04 \quad 统一设计语言};
+  \node[h3] at (5, -10.5) {深色舞台 + 六色分类 + 一致的标题规则};
+
+  % 色板
+  \node[h3,anchor=west] at (10, -22) {六色分类调色板};
+  \foreach \c/\n/\x in {
+    Teal/teal/0, Gold/gold/15, Rose/rose/30,
+    Indigo/indigo/45, Violet/violet/60, Sky/sky/75
+  } {
+    \fill[\c] (10+\x, -26) rectangle (10+\x+12, -30);
+    \node[micro,anchor=north,text width=12mm,align=center] at (16+\x, -30.5) {\n};
+  }
+
+  % 画布规范
+  \node[h3,anchor=west] at (100, -22) {画布规范};
+  \node[note,anchor=north west,text width=65mm] at (100, -25.5) {
+    \begin{itemize}
+      \item[\textbullet] 固定尺寸 1400 × 900，viewBox 一致
+      \item[\textbullet] 标题位于左上角 (72, 78)，副标题与分隔线紧随
+      \item[\textbullet] 背景深色 (\texttt{\#0c1a2c})，前景字浅，标签为 \texttt{label} / \texttt{micro} 类
+      \item[\textbullet] 每个场景都有一个独特的叙事问题，而不仅是几何展示
+    \end{itemize}
+  };
+\end{tikzpicture}
+
+\LongConnector{最后落到工程契约：可构建、可测试、可安装}
+
+% ============================================================
+%  面板 5：工程契约
+% ============================================================
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \node[panel,minimum width=172mm,minimum height=38mm,anchor=north west]
+    (p5) at (0,0) {};
+
+  \node[kicker] at (5, -5) {05 \quad 工程契约};
+  \node[h3] at (5, -10.5) {justfile 标准 recipe + 浏览器可视化验证};
+
+  % 三列
+  \node[viz-chip,fill=Teal!14,draw=TealDark,text=TealDark,minimum width=50mm,anchor=north west]
+    (j1) at (8, -18) {\texttt{just build} \quad Vite 构建};
+  \node[viz-chip,fill=Gold!20,draw=GoldDark,text=GoldDark!85!black,minimum width=50mm,anchor=north west]
+    (j2) at (61, -18) {\texttt{just test} \quad 类型 + 渲染验收};
+  \node[viz-chip,fill=Indigo!14,draw=IndigoDark,text=IndigoDark,minimum width=50mm,anchor=north west]
+    (j3) at (114, -18) {\texttt{just install} \quad 同步静态站点};
+
+  \node[note,anchor=north west,text width=158mm] at (8, -28)
+    {验证闭环：\texttt{npm test} = TypeScript 类型检查 + Vite 构建 + Playwright 离线渲染 + 像素快照比对。
+    所有场景透明 PNG 输出到 \texttt{out/}，README 中以内联图集呈现。};
+\end{tikzpicture}
+
+\vspace{4mm}
+
+% ============================================================
+%  来源注脚
+% ============================================================
+\hrule height .4pt depth 0pt \textcolor{Fog}{}
+\vspace{2mm}
+{\scriptsize\color{Slate}
+信息来源：\texttt{README.md}、\texttt{catalog.json}、\texttt{package.json}、\texttt{src/main.ts}
+\quad\textperiodcentered\quad
+项目路径：\texttt{plot/d3-visuals}
+\quad\textperiodcentered\quad
+v0.2.0
+}\par
+
+\end{document}

@@ -1,0 +1,118 @@
+{
+  "project": "d3-visuals",
+  "project_path": "~/projects/plot/d3-visuals",
+  "infographic_id": "architecture-infographic",
+  "language": "zh-CN",
+  "backend": "tikz/xelatex",
+  "engine": "xelatex",
+  "engine_version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023)",
+  "render_dpi": 220,
+  "thesis": "D3 在这里不是预设图表库，而是几何与布局工具箱。十二个参考场景共享同一种构建管线与视觉语言。",
+  "reader_question": "这个 D3 可视化项目包含什么内容，如何组织，如何构建与验证？",
+  "narrative_sections": [
+    "项目定位：以场景驱动的 D3 几何工作台，12 个场景、6 个视觉家族",
+    "视觉家族地图：层级/网络/空间/流动/分布变化/循环时间 六大家族",
+    "构建与渲染管线：源码 → Vite 构建 → Playwright 截图 → 像素验收",
+    "统一设计语言：六色分类调色板 + 固定画布规范",
+    "工程契约：justfile 三 recipe，类型检查 + 渲染 + 像素验收闭环"
+  ],
+  "evidence_sources": [
+    {
+      "path": "README.md",
+      "aspect": "项目概述、场景清单、测试命令"
+    },
+    {
+      "path": "catalog.json",
+      "aspect": "12 个场景的用途、问题、家族、标签元数据"
+    },
+    {
+      "path": "package.json",
+      "aspect": "依赖版本、构建/测试脚本"
+    },
+    {
+      "path": "src/main.ts",
+      "aspect": "渲染函数注册表、场景分发、就绪信号"
+    }
+  ],
+  "visual_families": [
+    {
+      "id": "hierarchy",
+      "scenes": [
+        "radial-tree",
+        "treemap",
+        "sunburst"
+      ],
+      "color": "teal"
+    },
+    {
+      "id": "network",
+      "scenes": [
+        "force-network",
+        "matrix"
+      ],
+      "color": "violet"
+    },
+    {
+      "id": "spatial",
+      "scenes": [
+        "voronoi",
+        "contours"
+      ],
+      "color": "sky"
+    },
+    {
+      "id": "flow",
+      "scenes": [
+        "chord",
+        "streamgraph"
+      ],
+      "color": "rose"
+    },
+    {
+      "id": "change",
+      "scenes": [
+        "beeswarm",
+        "slopegraph"
+      ],
+      "color": "gold"
+    },
+    {
+      "id": "cyclical",
+      "scenes": [
+        "spiral"
+      ],
+      "color": "indigo"
+    }
+  ],
+  "artifacts": {
+    "tex": {
+      "filename": "architecture-infographic.tex",
+      "bytes": 17848,
+      "sha256": "2682a1428a928096fd2c37dc9661853c70ccf6ae5300e77fc22ec67d2284041b"
+    },
+    "pdf": {
+      "filename": "architecture-infographic.pdf",
+      "bytes": 153518,
+      "sha256": "ba33d497bbf982d6662f3f1392a54387a96a27a6fedaec1bdbc5dc45db0e177b"
+    },
+    "png": {
+      "filename": "architecture-infographic.png",
+      "bytes": 764398,
+      "sha256": "260a84bea81f418e638a9ff003471a04f8ee3b1847e5d4ef36e857778d0d1d9a",
+      "width_px": 1610,
+      "height_px": 4031
+    },
+    "svg": {
+      "filename": "architecture-infographic.svg",
+      "bytes": 1280120,
+      "sha256": "df0aed9d83e450751d33c98ad39ef706e5d8434249d4ee38c8dce7222bb76868"
+    }
+  },
+  "verification": {
+    "text_overlap_count": 0,
+    "tiny_text_count": 0,
+    "composition_findings": 0,
+    "identity_check": "D3-VISUALS",
+    "identity_match": true
+  }
+}

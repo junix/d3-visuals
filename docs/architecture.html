@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D3 Visuals 架构文档</title>
+<style>
+  :root{
+    --bg:#f7fafd; --surface:#ffffff; --ink:#0c1a2c; --ink-2:#2c3e50; --muted:#5a7085;
+    --line:#d9e5ee; --accent:#2b7bd9; --accent-soft:#e6f0fb;
+    --c1:#54d6c6; --c2:#ffd166; --c3:#ff6f91; --c4:#7b9cff; --c5:#b889ff; --c6:#65b9ff;
+    --shadow:0 1px 2px rgba(20,40,60,.04), 0 8px 24px rgba(20,40,60,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 32px 96px}
+  header.hero{padding:56px 48px;background:linear-gradient(135deg,#eef6ff 0%,#f5f0ff 50%,#fff4ec 100%);border-radius:20px;box-shadow:var(--shadow);margin-bottom:48px}
+  header.hero h1{font-size:34px;margin:0 0 10px;letter-spacing:-.3px}
+  header.hero p.lead{font-size:17px;color:var(--ink-2);margin:0;max-width:720px}
+  header.hero .tagline{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+  header.hero .tag{background:rgba(255,255,255,.7);border:1px solid var(--line);padding:5px 12px;border-radius:999px;font-size:13px;color:var(--muted)}
+  h2{font-size:24px;margin:56px 0 8px;letter-spacing:-.2px}
+  h3{font-size:18px;margin:28px 0 8px;color:var(--ink-2)}
+  p{color:var(--ink-2);margin:8px 0 16px}
+  .section-note{color:var(--muted);font-size:14px;margin-top:-4px;margin-bottom:20px}
+  ul.features{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:16px 0 8px}
+  ul.features li{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+  ul.features li strong{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+  ul.features li span{color:var(--muted);font-size:13.5px;line-height:1.6}
+  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow);margin:20px 0 16px;overflow:hidden}
+  .diagram svg{display:block;width:100%;height:auto;max-height:420px}
+  .prose{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);margin:12px 0 8px}
+  .prose h4{margin:0 0 8px;font-size:15px;color:var(--accent)}
+  .prose p{margin:6px 0;color:var(--ink-2);font-size:14.5px}
+  .walkthrough{background:linear-gradient(180deg,#f0f6ff 0%,#f7f3ff 100%);border:1px solid var(--line);border-radius:var(--radius);padding:24px 28px;margin:20px 0 8px;box-shadow:var(--shadow)}
+  .walkthrough h3{margin-top:0;color:var(--accent)}
+  .steps{counter-reset:step;margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+  .steps li{counter-increment:step;display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+  .steps li::before{content:counter(step);flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:grid;place-items:center;font-size:14px}
+  .steps li .step-body strong{color:var(--ink);font-size:14.5px;display:block;margin-bottom:2px}
+  .steps li .step-body span{color:var(--muted);font-size:13.5px;line-height:1.6}
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;text-align:center}
+  .legend-row{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 4px;font-size:13px;color:var(--muted)}
+  .legend-item{display:flex;align-items:center;gap:6px}
+  .legend-dot{width:10px;height:10px;border-radius:50%}
+  @media print{
+    body{background:#fff}
+    .wrap{padding:0;max-width:none}
+    header.hero{box-shadow:none;border:1px solid #ccc}
+    .diagram,.prose,.walkthrough,ul.features li{box-shadow:none;break-inside:avoid}
+    h2{break-after:avoid}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>D3 Visuals 架构文档</h1>
+  <p class="lead">以 D3 为几何与布局工具包，构建十二种参考级可视化场景。不做图表模板库，而是探索视觉家族的几何表达。</p>
+  <div class="tagline">
+    <span class="tag">TypeScript</span>
+    <span class="tag">D3.js 7.9</span>
+    <span class="tag">Vite</span>
+    <span class="tag">Playwright</span>
+    <span class="tag">12 Scenes</span>
+  </div>
+</header>
+
+<h2>产品概述</h2>
+<p class="section-note">第一层理解：这个项目是什么、解决什么问题</p>
+<p>
+  <strong>D3 Visuals</strong> 是一个可视化参考实验室。它收录了十二种不同视觉家族（flow / hierarchy / network / spatial / temporal / distribution / scalar field / cyclical）的场景实现，每个场景对应一个独立的激励性问题。项目的核心目的不是输出可复用的图表组件，而是展示 D3 作为几何计算与布局引擎的能力——把数据映射成形状、路径与颜色。
+</p>
+<p>
+  项目通过 <code>catalog.json</code> 对场景进行元数据登记，每个场景有唯一 id、用途类别、复杂度和标签。所有场景共享同一套画布尺寸（1400×900）和同一套六色主调色板，保证视觉一致性。
+</p>
+
+<ul class="features">
+  <li><strong>12 种视觉家族</strong><span>覆盖流、层次、网络、空间、时序、分布、标量场、周期等八大家族</span></li>
+  <li><strong>程序化数据</strong><span>所有数据均由数学函数合成，零外部依赖，离线可复现</span></li>
+  <li><strong>SVG 输出</strong><span>纯 SVG 渲染，支持透明背景导出，便于嵌入文档</span></li>
+  <li><strong>像素级验收</strong><span>基于 Playwright 的端到端测试：透明度、可见像素、色彩丰富度三重校验</span></li>
+  <li><strong>交互合约</strong><span>每个场景必须响应 pointer 事件，测试脚本验证交互计数递增</span></li>
+  <li><strong>离线友好</strong><span>构建与测试完全离线，网络请求被 Playwright 路由拦截</span></li>
+</ul>
+
+<h2>系统架构</h2>
+<p class="section-note">第二层理解：模块如何组织、数据如何流动</p>
+
+<div class="diagram" id="diag1">
+  <svg viewBox="0 0 900 360" role="img" aria-label="系统架构图">
+    <defs>
+      <linearGradient id="grad-src" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#eef6ff"/>
+        <stop offset="100%" stop-color="#ffffff"/>
+      </linearGradient>
+    </defs>
+    <!-- source layer -->
+    <g class="src-layer">
+      <rect x="40" y="40" width="240" height="100" rx="12" fill="url(#grad-src)" stroke="#d9e5ee"/>
+      <text x="160" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#0c1a2c">catalog.json</text>
+      <text x="160" y="95" text-anchor="middle" font-size="12" fill="#5a7085">场景元数据 · id / family / tags</text>
+      <text x="160" y="115" text-anchor="middle" font-size="12" fill="#5a7085">12 条记录</text>
+    </g>
+
+    <!-- core layer -->
+    <g class="core-layer">
+      <rect x="340" y="30" width="220" height="120" rx="12" fill="#ffffff" stroke="#2b7bd9" stroke-width="1.5"/>
+      <text x="450" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#0c1a2c">src/main.ts</text>
+      <text x="450" y="80" text-anchor="middle" font-size="12" fill="#5a7085">场景调度器 + 12 个渲染函数</text>
+      <text x="450" y="100" text-anchor="middle" font-size="12" fill="#5a7085">统一调色板 · 统一画布</text>
+      <text x="450" y="120" text-anchor="middle" font-size="12" fill="#5a7085">heading() 标题工具</text>
+    </g>
+
+    <!-- d3 layer -->
+    <g class="d3-layer">
+      <rect x="620" y="40" width="240" height="100" rx="12" fill="url(#grad-src)" stroke="#d9e5ee"/>
+      <text x="740" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#0c1a2c">D3.js 7.9</text>
+      <text x="740" y="95" text-anchor="middle" font-size="12" fill="#5a7085">chord / tree / voronoi / force</text>
+      <text x="740" y="115" text-anchor="middle" font-size="12" fill="#5a7085">treemap / partition / stack / contours</text>
+    </g>
+
+    <!-- arrows src->core -->
+    <g class="arrow">
+      <path d="M 280 90 L 335 90" stroke="#7b9cff" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    </g>
+    <!-- arrows d3->core -->
+    <g class="arrow">
+      <path d="M 615 90 L 560 90" stroke="#b889ff" stroke-width="2" fill="none" marker-end="url(#arrowhead-l)"/>
+    </g>
+
+    <!-- build layer -->
+    <g class="build-layer">
+      <rect x="40" y="200" width="200" height="90" rx="12" fill="#fff4ec" stroke="#ffd166"/>
+      <text x="140" y="230" text-anchor="middle" font-size="14" font-weight="600" fill="#0c1a2c">Vite 构建</text>
+      <text x="140" y="252" text-anchor="middle" font-size="12" fill="#5a7085">TypeScript → ES Module</text>
+      <text x="140" y="272" text-anchor="middle" font-size="12" fill="#5a7085">输出 dist/</text>
+    </g>
+
+    <!-- render pipeline -->
+    <g class="render-layer">
+      <rect x="290" y="200" width="320" height="90" rx="12" fill="#eefaf8" stroke="#54d6c6" stroke-width="1.5"/>
+      <text x="450" y="228" text-anchor="middle" font-size="14" font-weight="700" fill="#0c1a2c">scripts/capture.mjs · 渲染管线</text>
+      <text x="450" y="250" text-anchor="middle" font-size="12" fill="#5a7085">启动 Vite → Playwright 加载场景 → 截图</text>
+      <text x="450" y="270" text-anchor="middle" font-size="12" fill="#5a7085">交互验证 · 像素验收 · 错误捕获</text>
+    </g>
+
+    <!-- output -->
+    <g class="output-layer">
+      <rect x="660" y="200" width="200" height="90" rx="12" fill="#f5f0ff" stroke="#b889ff"/>
+      <text x="760" y="230" text-anchor="middle" font-size="14" font-weight="600" fill="#0c1a2c">out/*.png</text>
+      <text x="760" y="252" text-anchor="middle" font-size="12" fill="#5a7085">12 张透明背景 PNG</text>
+      <text x="760" y="272" text-anchor="middle" font-size="12" fill="#5a7085">1400 × 900 px</text>
+    </g>
+
+    <!-- arrows build->render -->
+    <path d="M 240 245 L 285 245" stroke="#ffd166" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <!-- arrows render->output -->
+    <path d="M 610 245 L 655 245" stroke="#b889ff" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <!-- core -> build -->
+    <path d="M 400 150 L 180 190" stroke="#ff6f91" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#7b9cff"/>
+      </marker>
+      <marker id="arrowhead-l" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto">
+        <polygon points="10 0, 0 3.5, 10 7" fill="#b889ff"/>
+      </marker>
+    </defs>
+  </svg>
+  <div class="legend-row">
+    <div class="legend-item"><div class="legend-dot" style="background:#7b9cff"></div>配置/元数据输入</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2b7bd9"></div>核心模块</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b889ff"></div>输出产物</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffd166"></div>构建工具</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#54d6c6"></div>测试/渲染管线</div>
+  </div>
+</div>
+
+<div class="prose">
+  <h4>架构解读</h4>
+  <p>
+    项目采用「单文件核心 + 外部管线」的极简架构。<code>src/main.ts</code> 是唯一的源代码文件，内含场景调度逻辑和全部 12 个渲染函数。每个渲染函数内部直接调用 D3 的布局算法（chord / tree / voronoi / force / treemap / partition / stack / contours 等），将合成数据映射为 SVG 元素。
+  </p>
+  <p>
+    渲染管线 <code>scripts/capture.mjs</code> 扮演质量关卡的角色：它启动 Vite 开发服务器，用 Playwright 以无头 Chrome 逐个加载场景，等待 <code>window.__VIS_READY__</code> 就绪标志后截图，并对 PNG 做像素级校验（透明度占比、可见像素占比、色彩丰富度），同时验证交互事件合约。
+  </p>
+</div>
+
+<h2>场景家族与布局引擎</h2>
+<p class="section-note">第三层理解：12 个场景如何按视觉家族分组，分别调用哪些 D3 能力</p>
+
+<div class="diagram" id="diag2">
+  <svg viewBox="0 0 900 440" role="img" aria-label="场景家族与布局引擎映射图">
+    <!-- center: d3 core -->
+    <circle cx="450" cy="220" r="70" fill="#e6f0fb" stroke="#2b7bd9" stroke-width="2"/>
+    <text x="450" y="215" text-anchor="middle" font-size="15" font-weight="700" fill="#0c1a2c">D3 布局引擎</text>
+    <text x="450" y="238" text-anchor="middle" font-size="12" fill="#5a7085">几何计算 · 路径生成</text>
+
+    <!-- eight families around -->
+    <!-- Flow -->
+    <g class="fam" data-family="flow">
+      <circle cx="200" cy="90" r="52" fill="#eefaf8" stroke="#54d6c6" stroke-width="1.5"/>
+      <text x="200" y="85" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">Flow 流</text>
+      <text x="200" y="105" text-anchor="middle" font-size="11" fill="#5a7085">chord</text>
+      <text x="200" y="122" text-anchor="middle" font-size="11" fill="#5a7085">1 场景</text>
+    </g>
+    <path d="M 252 100 Q 340 140 390 170" stroke="#54d6c6" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+    <!-- Hierarchy -->
+    <g class="fam" data-family="hierarchy">
+      <circle cx="700" cy="90" r="52" fill="#fff4ec" stroke="#ffd166" stroke-width="1.5"/>
+      <text x="700" y="78" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">Hierarchy</text>
+      <text x="700" y="96" text-anchor="middle" font-size="11" fill="#5a7085">层次结构</text>
+      <text x="700" y="114" text-anchor="middle" font-size="11" fill="#5a7085">tree / treemap / sunburst</text>
+      <text x="700" y="130" text-anchor="middle" font-size="11" fill="#5a7085">3 场景</text>
+    </g>
+    <path d="M 648 100 Q 560 140 510 170" stroke="#ffd166" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+    <!-- Network -->
+    <g class="fam" data-family="network">
+      <circle cx="150" cy="240" r="52" fill="#f5f0ff" stroke="#b889ff" stroke-width="1.5"/>
+      <text x="150" y="232" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">Network</text>
+      <text x="150" y="250" text-anchor="middle" font-size="11" fill="#5a7085">网络</text>
+      <text x="150" y="268" text-anchor="middle" font-size="11" fill="#5a7085">force / matrix</text>
+      <text x="150" y="284" text-anchor="middle" font-size="11" fill="#5a7085">2 场景</text>
+    </g>
+    <path d="M 202 240 L 380 225" stroke="#b889ff" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+    <!-- Spatial -->
+    <g class="fam" data-family="spatial">
+      <circle cx="180" cy="370" r="52" fill="#eef6ff" stroke="#65b9ff" stroke-width="1.5"/>
+      <text x="180" y="362" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">Spatial</text>
+      <text x="180" y="380" text-anchor="middle" font-size="11" fill="#5a7085">空间</text>
+      <text x="180" y="398" text-anchor="middle" font-size="11" fill="#5a7085">voronoi</text>
+      <text x="180" y="414" text-anchor="middle" font-size="11" fill="#5a7085">1 场景</text>
+    </g>
+    <path d="M 232 350 Q 340 300 390 260" stroke="#65b9ff" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+    <!-- Temporal -->
+    <g class="fam" data-family="temporal">
+      <circle cx="720" cy="240" r="52" fill="#ffe8ee" stroke="#ff6f91" stroke-width="1.5"/>
+      <text x="720" y="232" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">Temporal</text>
+      <text x="720" y="250" text-anchor="middle" font-size="11" fill="#5a7085">时序构成</text>
+      <text x="720" y="268" text-anchor="middle" font-size="11" fill="#5a7085">streamgraph</text>
+      <text x="720" y="284" text-anchor="middle" font-size="11" fill="#5a7085">1 场景</text>
+    </g>
+    <path d="M 668 240 L 520 225" stroke="#ff6f91" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+    <!-- Distribution + Change -->
+    <g class="fam" data-family="distribution">
+      <circle cx="700" cy="370" r="52" fill="#eef6ff" stroke="#7b9cff" stroke-width="1.5"/>
+      <text x="700" y="358" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">分布 / 变化</text>
+      <text x="700" y="376" text-anchor="middle" font-size="11" fill="#5a7085">beeswarm / slopegraph</text>
+      <text x="700" y="394" text-anchor="middle" font-size="11" fill="#5a7085">force 碰撞 · linear 比例</text>
+      <text x="700" y="410" text-anchor="middle" font-size="11" fill="#5a7085">2 场景</text>
+    </g>
+    <path d="M 648 350 Q 560 300 510 260" stroke="#7b9cff" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+    <!-- Scalar field + Cyclical -->
+    <g class="fam" data-family="field">
+      <circle cx="450" cy="380" r="52" fill="#eefaf8" stroke="#54d6c6" stroke-width="1.5"/>
+      <text x="450" y="372" text-anchor="middle" font-size="13" font-weight="600" fill="#0c1a2c">场 / 周期</text>
+      <text x="450" y="390" text-anchor="middle" font-size="11" fill="#5a7085">contours / spiral</text>
+      <text x="450" y="408" text-anchor="middle" font-size="11" fill="#5a7085">marching squares · 曲线</text>
+      <text x="450" y="424" text-anchor="middle" font-size="11" fill="#5a7085">2 场景</text>
+    </g>
+    <path d="M 450 328 L 450 290" stroke="#54d6c6" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+  </svg>
+</div>
+
+<div class="prose">
+  <h4>家族与引擎映射</h4>
+  <p>
+    12 个场景分属八个视觉家族，各自调用 D3 不同的布局原语。<strong>层次家族</strong>（3 个场景）基于 <code>d3.hierarchy</code>，分别用 tree / treemap / partition 三种布局算法表达同一数据结构的不同几何形态。<strong>网络家族</strong>（2 个场景）则分别用 <code>d3.forceSimulation</code> 力导向和邻接矩阵两种方式表达协作关系。
+  </p>
+  <p>
+    值得注意的是 beeswarm 场景，它并非调用独立的 beeswarm 布局器，而是借用 <code>d3.forceSimulation</code> 的 collision 力来实现点的非重叠排布——体现了项目「D3 是几何工具包」的核心定位。
+  </p>
+</div>
+
+<h2>主走查：场景渲染与像素验收</h2>
+<p class="section-note">端到端场景：从命令触发到 PNG 输出的完整链路</p>
+
+<div class="walkthrough">
+  <h3>主走查 · 渲染验收闭环</h3>
+  <p style="margin:0 0 8px;color:var(--muted);font-size:14px">运行 <code>npm test</code> 触发的完整流程，覆盖构建、浏览器渲染、交互验证与像素验收四个阶段。</p>
+  <ol class="steps">
+    <li><div class="step-body"><strong>TypeScript 类型检查</strong><span><code>tsc --noEmit</code> 编译期校验。通过后进入构建，失败则整条测试链提前终止。</span></div></li>
+    <li><div class="step-body"><strong>Vite 构建 + 开发服务器启动</strong><span><code>capture.mjs</code> 子进程启动 Vite（指定端口，如 4176），监听 stdout 中就绪标志，超时 15 秒抛出异常。</span></div></li>
+    <li><div class="step-body"><strong>Playwright 逐个加载场景</strong><span>遍历 catalog 中的 12 个 scene id，按 <code>?scene=xxx</code> 打开页面；路由拦截所有非本地请求，确保离线。</span></div></li>
+    <li><div class="step-body"><strong>就绪等待 + 透明截图</strong><span>等待 <code>window.__VIS_READY__ === true</code>（15 秒超时），对 <code>#stage</code> 元素执行 <code>omitBackground: true</code> 截图，输出到 <code>out/</code>。</span></div></li>
+    <li><div class="step-body"><strong>交互合约验证</strong><span>读取 <code>__INTERACTION_COUNT__</code> 初值，模拟两次鼠标移动后再次读取，要求计数严格递增，否则判定交互失效。</span></div></li>
+    <li><div class="step-body"><strong>像素级三重验收</strong><span>用 pngjs 解析输出 PNG，统计：透明像素 ≥ 8%、可见像素 ≥ 3.5%、色彩丰富像素 ≥ 2500。任一不达标则场景失败。</span></div></li>
+  </ol>
+</div>
+
+<div class="prose">
+  <h4>走查要点</h4>
+  <p>
+    整条测试链的设计哲学是「视觉项目的可观测性」。对于以图形为输出的项目，传统单元测试难以覆盖渲染质量，因此项目采用像素级验收作为主要质量防线：透明度下限保证背景确实透明（而非白底），可见像素下限保证画面不为空，色彩丰富度下限保证不是单色噪点。
+  </p>
+  <p>
+    交互合约（interaction contract）是另一层保障：每个场景的 SVG 根元素必须监听 pointer 事件并递增全局计数器。这确保了场景不只是静态图像，而是具备基本交互响应能力的活的可视化。
+  </p>
+</div>
+
+<h2>设计决策</h2>
+<p class="section-note">关键的架构取舍与原因</p>
+
+<div class="prose">
+  <h4>单文件核心 vs 多模块拆分</h4>
+  <p>
+    全部 12 个场景的渲染逻辑集中在 <code>src/main.ts</code> 一个文件中，没有拆分为独立模块。这个选择的理由是：每个场景的代码量不大（10–25 行），且共享调色板、标题工具、画布尺寸等基础配置，拆分会增加导入层级和心智负担。对于示例型项目，集中式布局更便于横向比较不同视觉家族的实现方式。
+  </p>
+</div>
+
+<div class="prose">
+  <h4>合成数据 vs 真实数据</h4>
+  <p>
+    所有场景使用数学函数（sin / cos / 模运算 / 随机分布）合成数据，不依赖任何外部数据源。这保证了：① 构建完全离线可复现；② 输出图像稳定，像素验收不会因数据变化而误报；③ 项目聚焦于可视化表达本身，而非数据获取或清洗。代价是场景缺少真实叙事深度，但作为参考实验室这是有意的取舍。
+  </p>
+</div>
+
+<div class="prose">
+  <h4>Playwright 像素验收 vs 快照对比</h4>
+  <p>
+    测试方案选用「像素统计阈值」而非传统的「快照像素对比」。原因在于力导向图（force network）等场景的布局有一定随机性，严格像素对比会产生大量误报。统计阈值（透明度、可见面积、色彩丰富度）既能抓住渲染失败（空白、全黑、纯色），又对布局抖动有足够容忍度。
+  </p>
+</div>
+
+<footer>
+  D3 Visuals · 架构文档 · 生成于 2026-08-24
+</footer>
+
+</div>
+
+<script>
+(function(){
+  // 仅在未设置减少动画偏好时执行动画
+  var mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mql.matches) return;
+
+  // --- 图1：节点依次淡入 ---
+  var diag1 = document.getElementById('diag1');
+  if (diag1) {
+    var groups = diag1.querySelectorAll('.src-layer, .d3-layer, .core-layer, .build-layer, .render-layer, .output-layer, .arrow');
+    groups.forEach(function(g, i){
+      g.style.opacity = '0';
+      g.style.transform = 'translateY(8px)';
+      g.style.transition = 'opacity .6s ease, transform .6s ease';
+      setTimeout(function(){
+        g.style.opacity = '1';
+        g.style.transform = 'translateY(0)';
+      }, 150 + i * 120);
+    });
+  }
+
+  // --- 图2：家族节点脉冲 + 中心呼吸 ---
+  var diag2 = document.getElementById('diag2');
+  if (diag2) {
+    var centerCircle = diag2.querySelector('circle[cx="450"][cy="220"]');
+    if (centerCircle) {
+      var origR = parseFloat(centerCircle.getAttribute('r'));
+      var t = 0;
+      function pulse() {
+        t += 0.02;
+        var r = origR + Math.sin(t) * 3;
+        centerCircle.setAttribute('r', r);
+        requestAnimationFrame(pulse);
+      }
+      pulse();
+    }
+    // 各家族依次缩放进入
+    var fams = diag2.querySelectorAll('.fam');
+    fams.forEach(function(f, i){
+      var c = f.querySelector('circle');
+      if (!c) return;
+      var origOpacity = 0;
+      f.style.opacity = '0';
+      f.style.transformOrigin = 'center';
+      f.style.transition = 'opacity .5s ease';
+      setTimeout(function(){ f.style.opacity = '1'; }, 200 + i * 90);
+    });
+  }
+
+  // --- 走查步骤依次进入 ---
+  var steps = document.querySelectorAll('.steps li');
+  if (steps.length && 'IntersectionObserver' in window) {
+    steps.forEach(function(s){
+      s.style.opacity = '0';
+      s.style.transform = 'translateX(-12px)';
+      s.style.transition = 'opacity .5s ease, transform .5s ease';
+    });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry, idx){
+        if (entry.isIntersecting) {
+          var li = entry.target;
+          var i = Array.prototype.indexOf.call(steps, li);
+          setTimeout(function(){
+            li.style.opacity = '1';
+            li.style.transform = 'translateX(0)';
+          }, i * 80);
+          io.unobserve(li);
+        }
+      });
+    }, { threshold: 0.2 });
+    steps.forEach(function(s){ io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
