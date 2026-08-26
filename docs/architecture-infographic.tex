@@ -1,10 +1,13 @@
+% Render: python3 ~/.agents/skills/create-infographic/scripts/render_tikz.py docs/architecture-infographic.tex --workdir . --out-dir docs --engine xelatex --dpi 300 --svg --strict-warnings --strict-geometry --strict-composition --strict-svg --min-labelled-connectors 0.6 --expect-text "d3-visuals"
 \documentclass[border=14pt,varwidth=17.6cm]{standalone}
 \usepackage[UTF8,fontset=none]{ctex}
 \IfFontExistsTF{Source Han Serif SC}{
-  \setmainfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
-  \setsansfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
-  \setCJKmainfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
-  \setCJKsansfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  % LetterSpace：拉开负 kern 字对的字形墨盒，消除导出时的亚像素重叠
+  % （BoldFeatures 必须显式带上，否则粗体实例不继承 tracking）
+  \setmainfont[BoldFont={Source Han Serif SC Bold},LetterSpace=4.0,BoldFeatures={LetterSpace=4.0}]{Source Han Serif SC}
+  \setsansfont[BoldFont={Source Han Serif SC Bold},LetterSpace=4.0,BoldFeatures={LetterSpace=4.0}]{Source Han Serif SC}
+  \setCJKmainfont[BoldFont={Source Han Serif SC Bold},LetterSpace=4.0,BoldFeatures={LetterSpace=4.0}]{Source Han Serif SC}
+  \setCJKsansfont[BoldFont={Source Han Serif SC Bold},LetterSpace=4.0,BoldFeatures={LetterSpace=4.0}]{Source Han Serif SC}
 }{
   \PackageWarningNoLine{tikz-infographic}{Source Han Serif SC not found; using Fandol}
   \setCJKmainfont[BoldFont={FandolSong-Bold}]{FandolSong-Regular}
@@ -19,6 +22,8 @@
   \setCJKmonofont{FandolFang-Regular}
 }
 \usepackage{xcolor}
+% CJK 字间微距：与 LetterSpace 配合，消除 CJK 字对的亚像素墨盒重叠
+\xeCJKsetup{CJKglue={\hskip 0.08em}}
 \usepackage{tikz}
 \usepackage{listings}
 \usetikzlibrary{arrows.meta,backgrounds,calc,fit,positioning,shapes.geometric,decorations.pathreplacing}
@@ -64,7 +69,7 @@
   },
   viz-chip/.style={
     rounded corners=1.5mm,line width=.8pt,minimum height=6.8mm,
-    minimum width=16mm,align=center,font=\rmfamily\footnotesize\bfseries,
+    minimum width=16mm,align=center,font=\rmfamily\scriptsize\bfseries,
     inner xsep=2mm,inner ysep=1.2mm
   },
   family-band/.style={
@@ -99,10 +104,8 @@
   commentstyle=\itshape\color{TealDark},
   stringstyle=\color{RoseDark},
   numberstyle=\scriptsize\color{Slate},
-  numbers=left,
-  numbersep=7pt,
-  frame=single,
-  rulecolor=\color{Fog},
+  numbers=none,
+  frame=none,
   backgroundcolor=\color{Paper!65},
   breaklines=true,
   columns=fullflexible,
@@ -110,7 +113,6 @@
   showstringspaces=false,
   tabsize=2,
   xleftmargin=8pt,
-  framexleftmargin=6pt,
   aboveskip=5pt,
   belowskip=0pt
 }
@@ -127,7 +129,7 @@
     \begin{tikzpicture}
       \draw[primary arrow] (0,.42) -- (0,-.42);
       \node[anchor=west,font=\rmfamily\scriptsize\bfseries,text=Slate]
-        at (.32,0) {#1};
+        at (.22,0) {#1};
     \end{tikzpicture}
   \end{center}
   \vspace{1.2mm}
@@ -140,14 +142,14 @@
 % ============================================================
 %  封面区
 % ============================================================
-\begin{tikzpicture}[remember picture,overlay]
+\begin{tikzpicture}
   % 顶部装饰色带（六种视觉家族色）
-  \fill[Teal]   (0,2)   rectangle (1.1, 2.5);
-  \fill[Gold]   (1.1,2) rectangle (2.2, 2.5);
-  \fill[Rose]   (2.2,2) rectangle (3.3, 2.5);
-  \fill[Indigo] (3.3,2) rectangle (4.4, 2.5);
-  \fill[Violet] (4.4,2) rectangle (5.5, 2.5);
-  \fill[Sky]    (5.5,2) rectangle (6.6, 2.5);
+  \fill[Teal]   (0,0)   rectangle (1.1, 0.5);
+  \fill[Gold]   (1.1,0) rectangle (2.2, 0.5);
+  \fill[Rose]   (2.2,0) rectangle (3.3, 0.5);
+  \fill[Indigo] (3.3,0) rectangle (4.4, 0.5);
+  \fill[Violet] (4.4,0) rectangle (5.5, 0.5);
+  \fill[Sky]    (5.5,0) rectangle (6.6, 0.5);
 \end{tikzpicture}
 
 \vspace{4mm}
@@ -219,7 +221,7 @@ D3 在这里不是预设图表库，而是几何与布局工具箱。项目用 T
   \node[viz-chip,below=4mm of fam2.south west,anchor=north west,
     fill=white,draw=VioletDark!70,text=Ink,minimum width=22mm] (n1) {Force Network};
   \node[viz-chip,right=2mm of n1,
-    fill=white,draw=VioletDark!70,text=Ink,minimum width=24mm] (n2) {Adjacency Matrix};
+    fill=white,draw=VioletDark!70,text=Ink,minimum width=24mm] (n2) {Ad\kern0.8pt jacency Matrix};
 
   \node[note,below=2mm of n1.south west,anchor=north west,text width=50mm,font=\scriptsize]
     {跨学科协作的社区与桥梁；十二支团队的非对称合作矩阵。};
@@ -282,52 +284,55 @@ D3 在这里不是预设图表库，而是几何与布局工具箱。项目用 T
 %  面板 3：构建与渲染管线
 % ============================================================
 \begin{tikzpicture}[x=1mm,y=1mm]
-  \node[panel,minimum width=172mm,minimum height=70mm,anchor=north west]
+  \node[panel,minimum width=172mm,minimum height=74mm,anchor=north west]
     (p3) at (0,0) {};
 
   \node[kicker] at (5, -5) {03 \quad 构建与渲染管线};
   \node[h3] at (5, -10.5) {从源码到像素验收的四步闭环};
 
-  % 四个阶段节点
-  \node[stage-tag] (s1) at (18, -24) {1};
-  \node[h3,anchor=west] at (27, -22.5) {源码与场景};
-  \node[note,anchor=north west,text width=35mm] at (27, -25.5)
+  % 四个阶段节点：标题在上独占一行，圆形序号与箭头行在下
+  \node[h3,anchor=west] at (9, -19) {源码与场景};
+  \node[stage-tag] (s1) at (18, -26) {1};
+  \node[note,anchor=north west,text width=36mm] at (9, -32)
     {TypeScript 单一入口 \texttt{src/main.ts}，12 个渲染函数由查询参数分发。};
 
-  \node[stage-tag,fill=GoldDark] (s2) at (58, -24) {2};
-  \node[h3,anchor=west] at (67, -22.5) {Vite 构建};
-  \node[note,anchor=north west,text width=35mm] at (67, -25.5)
+  \node[h3,anchor=west] at (49, -19) {Vite 构建};
+  \node[stage-tag,fill=GoldDark] (s2) at (58, -26) {2};
+  \node[note,anchor=north west,text width=36mm] at (49, -32)
     {\texttt{vite build} 打包至 \texttt{dist/}，纯静态资源，无运行时依赖。};
 
-  \node[stage-tag,fill=RoseDark] (s3) at (98, -24) {3};
-  \node[h3,anchor=west] at (107, -22.5) {Playwright 截图};
-  \node[note,anchor=north west,text width=35mm] at (107, -25.5)
+  \node[h3,anchor=west] at (89, -19) {Playwright 截图};
+  \node[stage-tag,fill=RoseDark] (s3) at (98, -26) {3};
+  \node[note,anchor=north west,text width=36mm] at (89, -32)
     {\texttt{scripts/capture.mjs} 逐场景加载，等 \texttt{\_\_VIS\_READY\_\_} 后导出透明 PNG。};
 
-  \node[stage-tag,fill=VioletDark] (s4) at (138, -24) {4};
-  \node[h3,anchor=west] at (147, -22.5) {像素验收};
-  \node[note,anchor=north west,text width=25mm] at (147, -25.5)
+  \node[h3,anchor=west] at (129, -19) {像素验收};
+  \node[stage-tag,fill=VioletDark] (s4) at (138, -26) {4};
+  \node[note,anchor=north west,text width=36mm] at (129, -32)
     {\texttt{npm test} 类型检查 + 渲染 + 像素对比，全绿即通过。};
 
-  % 箭头连接
-  \draw[primary arrow] (s1.east) -- (s2.west);
-  \draw[primary arrow] (s2.east) -- (s3.west);
-  \draw[primary arrow] (s3.east) -- (s4.east|-s3.east);
+  % 箭头连接（端口对端口，附动作标签）
+  \draw[primary arrow] (s1.east) -- (s2.west)
+    node[midway,below=1.4mm,font=\rmfamily\scriptsize,text=Slate] {vite 打包};
+  \draw[primary arrow] (s2.east) -- (s3.west)
+    node[midway,below=1.4mm,font=\rmfamily\scriptsize,text=Slate] {加载截图};
+  \draw[primary arrow] (s3.east) -- (s4.west)
+    node[midway,below=1.4mm,font=\rmfamily\scriptsize,text=Slate] {像素比对};
 
   % 下方：输入输出层
-  \node[h3,anchor=west] at (10, -42) {产出物};
+  \node[h3,anchor=west] at (10, -48) {产出物};
 
   \node[viz-chip,fill=Teal!14,draw=TealDark!60,text=Ink,minimum width=40mm,anchor=north west]
-    (o1) at (10, -47) {dist/ 静态站点};
+    (o1) at (10, -53) {dist/ 静态站点};
   \node[viz-chip,fill=Gold!18,draw=GoldDark!60,text=Ink,minimum width=40mm,anchor=north west]
-    (o2) at (52, -47) {out/*.png 场景图};
+    (o2) at (52, -53) {out/*.png 场景图};
   \node[viz-chip,fill=Indigo!14,draw=IndigoDark!60,text=Ink,minimum width=40mm,anchor=north west]
-    (o3) at (94, -47) {catalog.json 元数据};
+    (o3) at (94, -53) {catalog.json 元数据};
   \node[viz-chip,fill=Rose!14,draw=RoseDark!60,text=Ink,minimum width=30mm,anchor=north west]
-    (o4) at (136, -47) {README 图集};
+    (o4) at (136, -53) {README 图集};
 
   % 底部：代码片段
-  \node[h3,anchor=west] at (10, -60) {场景切换契约};
+  \node[h3,anchor=west] at (10, -67) {场景切换契约};
 \end{tikzpicture}
 
 \vspace{-1mm}
@@ -350,7 +355,7 @@ window.__VIS_READY__ = true;   // 通知截图脚本场景就绪
 %  面板 4：设计系统
 % ============================================================
 \begin{tikzpicture}[x=1mm,y=1mm]
-  \node[panel,minimum width=172mm,minimum height=50mm,anchor=north west]
+  \node[panel,minimum width=172mm,minimum height=62mm,anchor=north west]
     (p4) at (0,0) {};
 
   \node[kicker] at (5, -5) {04 \quad 统一设计语言};
@@ -408,9 +413,10 @@ window.__VIS_READY__ = true;   // 通知截图脚本场景就绪
 % ============================================================
 %  来源注脚
 % ============================================================
-\hrule height .4pt depth 0pt \textcolor{Fog}{}
-\vspace{2mm}
-{\scriptsize\color{Slate}
+\par\vspace{1.5mm}
+\noindent{\color{Fog}\rule{\linewidth}{.4pt}}\par
+\vspace{3.5mm}
+\noindent{\scriptsize\color{Slate}
 信息来源：\texttt{README.md}、\texttt{catalog.json}、\texttt{package.json}、\texttt{src/main.ts}
 \quad\textperiodcentered\quad
 项目路径：\texttt{plot/d3-visuals}

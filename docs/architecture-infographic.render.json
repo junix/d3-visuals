@@ -1,118 +1,235 @@
 {
-  "project": "d3-visuals",
-  "project_path": "~/projects/plot/d3-visuals",
-  "infographic_id": "architecture-infographic",
-  "language": "zh-CN",
-  "backend": "tikz/xelatex",
+  "source": "/Users/junix/projects/plot/d3-visuals/docs/architecture-infographic.tex",
+  "workdir": "/Users/junix/projects/plot/d3-visuals",
+  "source_sha256": "77ab8cbeafc39a3a5c48e6130c93db552410cd2f56806e5134a33470de9522cb",
   "engine": "xelatex",
   "engine_version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023)",
-  "render_dpi": 220,
-  "thesis": "D3 在这里不是预设图表库，而是几何与布局工具箱。十二个参考场景共享同一种构建管线与视觉语言。",
-  "reader_question": "这个 D3 可视化项目包含什么内容，如何组织，如何构建与验证？",
-  "narrative_sections": [
-    "项目定位：以场景驱动的 D3 几何工作台，12 个场景、6 个视觉家族",
-    "视觉家族地图：层级/网络/空间/流动/分布变化/循环时间 六大家族",
-    "构建与渲染管线：源码 → Vite 构建 → Playwright 截图 → 像素验收",
-    "统一设计语言：六色分类调色板 + 固定画布规范",
-    "工程契约：justfile 三 recipe，类型检查 + 渲染 + 像素验收闭环"
-  ],
-  "evidence_sources": [
-    {
-      "path": "README.md",
-      "aspect": "项目概述、场景清单、测试命令"
+  "dpi": 300,
+  "passes": 2,
+  "transparent_png": false,
+  "shell_escape": false,
+  "warnings": [],
+  "geometry": {
+    "pdf": "/var/folders/6q/xkny9rm10gqbzhz7qd0mjp5r0000gn/T/tikz-render-jbdw7pus/architecture-infographic.pdf",
+    "page_count": 1,
+    "expected_text": "d3-visuals",
+    "identity_match": true,
+    "thresholds": {
+      "min_text_pt": 6.5,
+      "min_width_occupancy": 0.45,
+      "min_height_occupancy": 0.3
     },
-    {
-      "path": "catalog.json",
-      "aspect": "12 个场景的用途、问题、家族、标签元数据"
+    "pages": [
+      {
+        "page": 1,
+        "width_pt": 526.79,
+        "height_pt": 1393.9,
+        "line_count": 125,
+        "text_extent": {
+          "left": 13.948,
+          "top": 50.116,
+          "right": 512.845,
+          "bottom": 1379.348
+        },
+        "width_occupancy": 0.9471,
+        "height_occupancy": 0.9536,
+        "overlap_count": 0,
+        "overlap_examples": [],
+        "tiny_text_count": 0,
+        "tiny_text_examples": []
+      }
+    ],
+    "issues": [],
+    "pass": true
+  },
+  "composition": {
+    "pdf": "/var/folders/6q/xkny9rm10gqbzhz7qd0mjp5r0000gn/T/tikz-render-jbdw7pus/architecture-infographic.pdf",
+    "page": {
+      "width_pt": 526.79,
+      "height_pt": 1393.9
     },
-    {
-      "path": "package.json",
-      "aspect": "依赖版本、构建/测试脚本"
+    "counts": {
+      "blocks": 50,
+      "containers": 5,
+      "leaf_blocks": 45,
+      "connectors": 8,
+      "marks": 7,
+      "text_lines": 125,
+      "masked_labels": 0,
+      "ignored_text_regions": 0,
+      "ignored_text_blocks": 0,
+      "ignored_text_connectors": 0,
+      "ignored_presentation_fields": 10,
+      "ignored_label_backdrops": 0
     },
-    {
-      "path": "src/main.ts",
-      "aspect": "渲染函数注册表、场景分发、就绪信号"
-    }
-  ],
-  "visual_families": [
-    {
-      "id": "hierarchy",
-      "scenes": [
-        "radial-tree",
-        "treemap",
-        "sunburst"
+    "metrics": {
+      "connectors_per_leaf_block": 0.178,
+      "labelled_connector_ratio": 0.875,
+      "leaf_area_cv": 0.885,
+      "lattice_ratio": 0.556,
+      "container_depth": 2,
+      "min_clearance_pt": null
+    },
+    "raster": {
+      "available": true,
+      "png": "/var/folders/6q/xkny9rm10gqbzhz7qd0mjp5r0000gn/T/tikz-render-jbdw7pus/architecture-infographic.png",
+      "background_rgb": [
+        248,
+        248,
+        248
       ],
-      "color": "teal"
+      "ink_density": 0.0775,
+      "cell_density_cv": 0.5986,
+      "quiet_cell_fraction": 0.1111,
+      "cells": 36
     },
-    {
-      "id": "network",
-      "scenes": [
-        "force-network",
-        "matrix"
-      ],
-      "color": "violet"
+    "thresholds": {
+      "clearance_pt": 2.0,
+      "label_radius_pt": 12.0,
+      "text_padding_pt": 1.5,
+      "min_block_area_pt2": 120.0,
+      "max_block_area_ratio": 0.55,
+      "min_connector_length_pt": 8.0,
+      "min_labeled_connector_ratio": 0.6,
+      "grid_min_blocks": 6,
+      "grid_area_cv": 0.12,
+      "grid_lattice_ratio": 0.75,
+      "max_container_depth": 2,
+      "max_ink_density": 0.38,
+      "min_quiet_cell_fraction": 0.08,
+      "min_cell_density_cv": 0.35
     },
-    {
-      "id": "spatial",
-      "scenes": [
-        "voronoi",
-        "contours"
-      ],
-      "color": "sky"
+    "violations": [],
+    "issues": [],
+    "notes": [],
+    "pass": true
+  },
+  "svg_lint": {
+    "tool": "svg-linter 0.1.0",
+    "input_sha256": "92753d0556c41dd0b340848b8ea05a5c02383050889bb11678e74802111f1d62",
+    "catalog": {
+      "schema_version": "svg-linter.catalog/v1",
+      "catalog_version": "3",
+      "catalog_hash": "sha256:9079749fd5985a8f505c2a96c7d7dd90a990fb73f9f295c12620f63c338ac333"
     },
-    {
-      "id": "flow",
-      "scenes": [
-        "chord",
-        "streamgraph"
-      ],
-      "color": "rose"
+    "passes": {
+      "error_gate": {
+        "select": [
+          "svg/duplicate-id",
+          "svg/dangling-reference"
+        ],
+        "coverage": {
+          "evaluated": [
+            "svg/dangling-reference",
+            "svg/duplicate-id"
+          ],
+          "not_evaluated": {}
+        },
+        "counts": {},
+        "errors": 0,
+        "total": 0,
+        "viz": null
+      },
+      "hygiene_review": {
+        "select": [
+          "svg/excessive-path-complexity",
+          "svg/unused-definition",
+          "svg/external-resource",
+          "svg/raster-upscale",
+          "svg/open-filled-path"
+        ],
+        "coverage": {
+          "evaluated": [
+            "svg/excessive-path-complexity",
+            "svg/external-resource",
+            "svg/open-filled-path",
+            "svg/raster-upscale",
+            "svg/unused-definition"
+          ],
+          "not_evaluated": {}
+        },
+        "counts": {},
+        "errors": 0,
+        "total": 0,
+        "viz": null
+      },
+      "collision_review": {
+        "select": [
+          "svg/line-overlap",
+          "svg/line-crossing",
+          "svg/line-text-overlap",
+          "svg/text-text-overlap",
+          "svg/canvas-edge-clearance",
+          "svg/ambiguous-junction",
+          "svg/connector-through-shape",
+          "svg/edge-congestion",
+          "svg/filter-clipping-risk",
+          "svg/low-contrast-text"
+        ],
+        "coverage": {
+          "evaluated": [
+            "svg/ambiguous-junction",
+            "svg/canvas-edge-clearance",
+            "svg/connector-through-shape",
+            "svg/edge-congestion",
+            "svg/filter-clipping-risk",
+            "svg/line-crossing",
+            "svg/line-overlap",
+            "svg/line-text-overlap",
+            "svg/low-contrast-text",
+            "svg/text-text-overlap"
+          ],
+          "not_evaluated": {}
+        },
+        "counts": {},
+        "errors": 0,
+        "total": 0,
+        "viz": "/Users/junix/projects/plot/d3-visuals/docs/architecture-infographic.collision-review.png"
+      }
     },
-    {
-      "id": "change",
-      "scenes": [
-        "beeswarm",
-        "slopegraph"
-      ],
-      "color": "gold"
-    },
-    {
-      "id": "cyclical",
-      "scenes": [
-        "spiral"
-      ],
-      "color": "indigo"
-    }
-  ],
+    "path_font_quarantine": [
+      "svg/out-of-bounds",
+      "svg/path-self-crossing",
+      "svg/exact-duplicate-geometry",
+      "svg/outlined-text",
+      "svg/dangling-connector",
+      "svg/marker-overlap",
+      "svg/text-container-overflow",
+      "svg/text-edge-clearance",
+      "svg/shape-shape-overlap",
+      "svg/text-shape-overlap",
+      "svg/tiny-dogleg",
+      "svg/acute-connector-bend",
+      "svg/excessive-bends",
+      "svg/alignment-outlier",
+      "svg/spacing-outlier",
+      "svg/size-outlier",
+      "svg/container-padding-outlier",
+      "svg/font-style-outlier"
+    ],
+    "error_gate_clean": true,
+    "collision_findings": 0
+  },
+  "published_despite_strict_failure": false,
   "artifacts": {
-    "tex": {
-      "filename": "architecture-infographic.tex",
-      "bytes": 17848,
-      "sha256": "2682a1428a928096fd2c37dc9661853c70ccf6ae5300e77fc22ec67d2284041b"
-    },
     "pdf": {
-      "filename": "architecture-infographic.pdf",
-      "bytes": 153518,
-      "sha256": "ba33d497bbf982d6662f3f1392a54387a96a27a6fedaec1bdbc5dc45db0e177b"
+      "path": "/Users/junix/projects/plot/d3-visuals/docs/architecture-infographic.pdf",
+      "bytes": 152696
     },
     "png": {
-      "filename": "architecture-infographic.png",
-      "bytes": 764398,
-      "sha256": "260a84bea81f418e638a9ff003471a04f8ee3b1847e5d4ef36e857778d0d1d9a",
-      "width_px": 1610,
-      "height_px": 4031
+      "path": "/Users/junix/projects/plot/d3-visuals/docs/architecture-infographic.png",
+      "bytes": 1104909,
+      "width_px": 2195,
+      "height_px": 5808,
+      "width_to_height": 0.3779
     },
     "svg": {
-      "filename": "architecture-infographic.svg",
-      "bytes": 1280120,
-      "sha256": "df0aed9d83e450751d33c98ad39ef706e5d8434249d4ee38c8dce7222bb76868"
+      "path": "/Users/junix/projects/plot/d3-visuals/docs/architecture-infographic.svg",
+      "bytes": 1267876
+    },
+    "svg_lint_viz": {
+      "path": "/Users/junix/projects/plot/d3-visuals/docs/architecture-infographic.collision-review.png",
+      "bytes": 139072
     }
-  },
-  "verification": {
-    "text_overlap_count": 0,
-    "tiny_text_count": 0,
-    "composition_findings": 0,
-    "identity_check": "D3-VISUALS",
-    "identity_match": true
   }
 }
