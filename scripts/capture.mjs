@@ -50,6 +50,13 @@ try {
     }
     const pixels = png.width * png.height;
     if (transparent < pixels * 0.08 || visible < pixels * 0.035 || colorful < 2500) throw new Error(`${scene}: weak RGBA content t=${transparent} v=${visible} c=${colorful}`);
+    if (scene === 'sunburst') {
+      const fills = await page.evaluate(() => Array.from(document.querySelectorAll('#stage path'), p => p.getAttribute('fill')));
+      const distinct = [...new Set(fills)];
+      if (fills.some(f => !f || !/^#[0-9a-f]{6}$/i.test(f))) throw new Error(`sunburst: arcs without a valid domain fill (${fills.filter(f => !f).length} of ${fills.length})`);
+      if (distinct.length !== 4) throw new Error(`sunburst: expected one shared color per top-level domain (4), got ${distinct.length}`);
+      if (distinct.some(c => fills.filter(f => f === c).length < 2)) throw new Error('sunburst: a domain color is not shared by its descendant arcs');
+    }
     console.log(`${scene}: ${png.width}x${png.height}, transparent=${(transparent/pixels*100).toFixed(1)}%, visible=${(visible/pixels*100).toFixed(1)}%, colorful=${colorful}`);
     await page.close();
   }
